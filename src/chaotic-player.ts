@@ -5,7 +5,7 @@ export default class ChaoticPlayer {
   private handlers: Partial<Record<PlayerState, Array<PlayerEventHandler | null>>>;
   position: number = 0;
 
-  constructor() {
+  constructor(private options = { loadDelay: 3000, playDelay: 1000, seekDelay: 500 }) {
     this.handlers = {};
   }
 
@@ -13,7 +13,7 @@ export default class ChaoticPlayer {
     this.emit('load');
     setTimeout(() => {
       this.emit('ready');
-    }, 3000);
+    }, this.options.loadDelay);
   }
 
   async play() {
@@ -21,7 +21,7 @@ export default class ChaoticPlayer {
       setTimeout(() => {
         this.emit('play');
         resolve();
-      }, 1000);
+      }, this.options.playDelay);
     });
   }
 
@@ -29,8 +29,8 @@ export default class ChaoticPlayer {
     this.emit('seek');
     setTimeout(() => {
       this.position = position;
-      this.emit('seek');
-    }, 1000);
+      this.emit('play');
+    }, this.options.seekDelay);
   }
 
   private emit(state: PlayerState) {
