@@ -24,7 +24,7 @@ import { fromEvent, Subject, Observable, tap, delayWhen, mergeMap, from, map } f
 const main = async () => {
   console.log('starting player...');
   const stateManager = createStateManager();
-  const player = new ChaoticPlayer({ seekDelay: 500, loadDelay: 5000, playDelay: 500 });
+  const player = new ChaoticPlayer({ loadDelay: 5000, playDelay: 500 });
 
   const changeState: PlayerEventHandler = ({ state }) => stateManager.setState(state);
 
@@ -37,7 +37,7 @@ const main = async () => {
   });
 
   player.addEventListener('play', () => {
-    console.log('We are finally playing...');
+    console.log('We are playing');
     changeState({ state: 'play' });
   });
 

@@ -3,9 +3,9 @@ export type PlayerEventHandler = (event: { state: PlayerState | null }) => void;
 
 export default class ChaoticPlayer {
   private handlers: Partial<Record<PlayerState, Array<PlayerEventHandler | null>>>;
-  position: number = 0;
+  private position: number = 0;
 
-  constructor(private options = { loadDelay: 3000, playDelay: 1000, seekDelay: 500 }) {
+  constructor(private options = { loadDelay: 3000, playDelay: 1000 }) {
     this.handlers = {};
   }
 
@@ -30,8 +30,10 @@ export default class ChaoticPlayer {
     setTimeout(() => {
       this.position = position;
       this.emit('play');
-    }, this.options.seekDelay);
+    }, Math.random() * 5000);
   }
+
+  public getPosition = () => this.position;
 
   private emit(state: PlayerState) {
     this.handlers[state]?.forEach((handler) => {
