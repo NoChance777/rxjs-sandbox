@@ -12,6 +12,7 @@ import { fromEvent, Subject, Observable, tap, delayWhen, mergeMap, from, map } f
 //     tap(() => console.log('--> calling play -->')),
 //     mergeMap(() => {
 //       // return from(player.play()).pipe(map(() => ({ state: 'play' as PlayerState | null })));
+//       player.play();
 //       return fromEvent(player, 'play');
 //     }),
 //     tap(() => console.log('--> play is executing'))
@@ -28,8 +29,8 @@ const main = async () => {
 
   const changeState: PlayerEventHandler = ({ state }) => stateManager.setState(state);
 
-  // const readyObservable = fromEvent(player, 'ready');
-  // readyObservable.subscribe(changeState);
+  const readyObservable = fromEvent(player, 'ready');
+  readyObservable.subscribe(changeState);
 
   player.addEventListener('ready', () => {
     console.log('We are ready to play');
