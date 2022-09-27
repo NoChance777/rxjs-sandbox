@@ -28,8 +28,8 @@ const main = async () => {
 
   const changeState: PlayerEventHandler = ({ state }) => stateManager.setState(state);
 
-  const readyObservable = fromEvent(player, 'ready');
-  readyObservable.subscribe(changeState);
+  // const readyObservable = fromEvent(player, 'ready');
+  // readyObservable.subscribe(changeState);
 
   player.addEventListener('ready', () => {
     console.log('We are ready to play');
