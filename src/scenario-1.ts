@@ -2,25 +2,22 @@ import ChaoticPlayer, { PlayerState, PlayerEventHandler } from './chaotic-player
 import createStateManager from './state-manager';
 import { fromEvent, Subject, Observable, tap, delayWhen, mergeMap, from, map } from 'rxjs';
 
-// const createPlayCommand = <T>(player: ChaoticPlayer, block: Observable<T>) => {
-//   const playSubject = new Subject<void>();
-//   const playCall = () => playSubject.next();
+const createPlayCommand = <T>(player: ChaoticPlayer, block: Observable<T>) => {
+  const playSubject = new Subject<void>();
+  const playCall = () => playSubject.next();
 
-//   const playPipe = playSubject.pipe(
-//     tap(() => console.log('attempt to play -->')),
-//     delayWhen(() => block),
-//     tap(() => console.log('--> calling play -->')),
-//     mergeMap(() => {
-//       // return from(player.play()).pipe(map(() => ({ state: 'play' as PlayerState | null })));
-//       player.play();
-//       return fromEvent(player, 'play');
-//     }),
-//     tap(() => console.log('--> play is executing'))
-//   );
+  const playPipe = playSubject.pipe(
+    delayWhen(() => block),
+    mergeMap(() => {
+      player.play();
+      return fromEvent(player, 'play');
+    }),
+    tap(() => console.log('--> play is executing'))
+  );
 
-//   playCall.observable = playPipe;
-//   return playCall;
-// };
+  playCall.observable = playPipe;
+  return playCall;
+};
 
 const main = async () => {
   console.log('starting player...');
@@ -32,21 +29,22 @@ const main = async () => {
   const readyObservable = fromEvent(player, 'ready');
   readyObservable.subscribe(changeState);
 
-  player.addEventListener('ready', () => {
-    console.log('We are ready to play');
-    changeState({ state: 'ready' });
-  });
+  // player.addEventListener('ready', () => {
+  //   console.log('We are ready to play');
+  //   changeState({ state: 'ready' });
+  // });
 
-  player.addEventListener('play', () => {
-    console.log('We are playing');
-    changeState({ state: 'play' });
-  });
+  // player.addEventListener('play', () => {
+  //   console.log('We are playing');
+  //   changeState({ state: 'play' });
+  // });
 
   player.load();
-  // const play = createPlayCommand(player, readyObservable);
-  // play.observable.subscribe(changeState);
-  // play();
-  player.play();
-};
+  const play = createPlayCommand(player, readyObservable);
+  play.observable.subscribe(changeState);
+  play();
+
+  //player.play();
+};;
 
 export default main;
